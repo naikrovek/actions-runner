@@ -22,7 +22,7 @@ function getRegistrationToken {
         fi
 
         if [[ ${SCOPE} == "enterprises" ]]; then
-            URL_PATH="$(echo "${RUNNER_URL}" | grep / | cut -d/ -f5-)"
+            URL_PATH="$(echo "${RUNNER_URL}")"
         else
             # Get the path to the organization or repository
             URL_PATH="$(echo "${RUNNER_URL}" | grep / | cut -d/ -f4-)"
