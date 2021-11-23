@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
 set -eEo pipefail
 
+#
+# Based heavily on https://github.com/peter-murray/github-actions-runner-container
+#
+
 function error {
     echo "Error; $1"
 }
 
 function getRegistrationToken {
     if [[ -z GITHUB_TOKEN ]]; then
-        error "A GITHUB_TOKEN environment variable is required to register the actions runner with the repository or organization."
+        error "GITHUB_TOKEN environment variable must be provided."
         exit 1
     else
-        # Get a short lived token to register the actions runner
-        echo "Getting registration token for runner..."
+        echo "Getting runner token"
 
         if [[ -z $SCOPE ]]; then
-            error "Was not able to identify SCOPE for the token"
+            error "SCOPE is not set... "
             exit 1
         fi
 
@@ -86,20 +89,22 @@ echo "Configuring GitHub Actions Runner and registering"
     $OTHER_OPTIONS
 
 # clean environment of secrets before starting the runner.
-# `env -i` also clears the path and other variables which could be useful
-OTHER_OPTIONS=""
-GROUP=""
-GITHUB_TOKEN=""
-RUNNER_WORK_DIRECTORY=""
-RUNNER_NAME=""
-TOKEN=""
-RUNNER_URL=""
-RUNNER_GROUP=""
-RUNNER_LABELS=""
-RUNNER_OPTIONS=""
-RUNNER_ENTERPRISE_URL=""
-RUNNER_ORGANIZATION_URL=""
-RUNNER_REPOSITORY_URL=""
+# launching `run.sh` with `env -i` also clears the path and other variables which are useful.
+# alternately you can use `env -i` and specify the necessary environment within the container.
+unset OTHER_OPTIONS
+unset GROUP
+unset GITHUB_TOKEN
+unset RUNNER_WORK_DIRECTORY
+unset RUNNER_NAME
+unset TOKEN
+unset TOKEN_URL
+unset RUNNER_URL
+unset RUNNER_GROUP
+unset RUNNER_LABELS
+unset RUNNER_OPTIONS
+unset RUNNER_ENTERPRISE_URL
+unset RUNNER_ORGANIZATION_URL
+unset RUNNER_REPOSITORY_URL
 
 echo "Starting GitHub Actions Runner"
 ./run.sh
