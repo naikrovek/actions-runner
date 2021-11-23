@@ -8,11 +8,10 @@ ENV GITHUB_TOKEN=""
 ENV RUNNER_LABELS=""
 ENV RUNNER_WORK_DIRECTORY="_work"
 ENV RUNNER_ALLOW_RUNASROOT=false
-ENV AGENT_TOOLS_DIRECTORY=/opt/hostedtoolcache
 
 # Create a user for running actions
 RUN useradd -m actions
-RUN mkdir -p /home/actions ${AGENT_TOOLS_DIRECTORY}
+RUN mkdir -p /home/actions 
 WORKDIR /home/actions
 
 RUN export DEBIAN_FRONTEND=noninteractive \
@@ -22,10 +21,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     && tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
     && rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
     && ./bin/installdependencies.sh \
-    && apt-get clean 
+    && apt-get clean \
+    && echo "actions ALL=(ALL) NOPASSWD:apt, apt-get" > /etc/sudoers.d/0-actions-runner
 
 COPY entrypoint.sh .
-RUN chmod +x ./entrypoint.sh && chown -R actions:actions /home/actions ${AGENT_TOOLS_DIRECTORY}
-
+RUN chmod +x ./entrypoint.sh && chown -R actions:actions /home/actions
 USER actions
 CMD ./entrypoint.sh
