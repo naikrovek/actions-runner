@@ -68,7 +68,7 @@ fi
 
 # If the user has provided any runner labels add them to the config options
 if [[ -n ${RUNNER_LABELS} ]]; then
-    RUNNER_OPTIONS="${RUNNER_OPTIONS} --labels ${RUNNER_LABELS}"
+    OTHER_OPTIONS="${RUNNER_OPTIONS} --labels ${RUNNER_LABELS}"
 fi
 
 # The runner group that the self-hosted runner will be registered with
@@ -88,9 +88,9 @@ echo "Configuring GitHub Actions Runner and registering"
     --ephemeral \
     $OTHER_OPTIONS
 
-# clean environment of secrets before starting the runner.
-# launching `run.sh` with `env -i` also clears the path and other variables which are useful.
-# alternately you can use `env -i` and specify the necessary environment within the container.
+# clean environment of secrets before starting the runner. launching `run.sh` with `env -i` also
+# clears the PATH and other variables which are useful, so we're going to unset secrets now that
+# they're no longer needed.
 unset OTHER_OPTIONS
 unset GROUP
 unset GITHUB_TOKEN
